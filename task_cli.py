@@ -74,3 +74,66 @@ def list_tasks(filter_status=None):
         return
     for task in tasks:
         print(f"{task['id']}. [{task['status']}] {task['description']}")
+
+
+def show_help():
+    print("""
+Usage:
+  python task-cli.py add "Task description"
+  python task-cli.py update <id> "New description"
+  python task-cli.py delete <id>
+  python task-cli.py mark-in-progress <id>
+  python task-cli.py mark-done <id>
+  python task-cli.py list [todo|in-progress|done]
+""")
+    
+def main():
+    
+    if len(sys.argv) < 2:
+        show_help()
+        return
+
+    command = sys.argv[1]
+    tasks = load_tasks()
+
+    if command == "add":
+        if len(sys.argv) < 3:
+            print("Missing task description.")
+        else:
+            add_task(sys.argv[2])
+
+    elif command == "update":
+        if len(sys.argv) < 4:
+            print("Usage: task-cli update <id> 'new description'")
+        else:
+            update_task(int(sys.argv[2]), sys.argv[3])
+
+    elif command == "delete":
+        if len(sys.argv) < 3:
+            print("Usage: task-cli delete <id>")
+        else:
+            delete_task(int(sys.argv[2]))
+
+    elif command == "mark-in-progress":
+        if len(sys.argv) < 3:
+            print("Usage: task-cli mark-in-progress <id>")
+        else:
+            mark_status(int(sys.argv[2]), "in-progress")
+
+    elif command == "mark-done":
+        if len(sys.argv) < 3:
+            print("Usage: task-cli mark-done <id>")
+        else:
+            mark_status(int(sys.argv[2]), "done")
+
+    elif command == "list":
+        if len(sys.argv) == 3:
+            list_tasks(sys.argv[2])
+        else:
+            list_tasks()
+
+    else:
+        show_help()
+
+if __name__ == "__main__":
+    main()
